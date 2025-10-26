@@ -1,0 +1,1 @@
+You'll need to install a local version of Postgres and commission your own Login/Group-Role to run this application. I'd also suggest installing SoapUI to test the REST endpoints, since other suites like Postman are starting to collect user data. I may include a SoapUI project file with some sample tests in the future.
