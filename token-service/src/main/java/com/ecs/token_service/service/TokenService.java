@@ -43,12 +43,12 @@ public class TokenService {
     
     public TokenResponse generateToken(TokenRequest request) {
         try {
-            // In a real implementation, validate clientId and clientSecret
             ClientInfoEntity clientInfoEntity = validateClient(request);
             List<String> scopes = clientMappingUtil.rolesFromString(clientInfoEntity.getRoles());
+            List<String> refreshScope = List.of("refresh");
             
             String accessToken = createJWT(request.getClientId(), accessTokenExpiration, scopes);
-            String refreshToken = createJWT(request.getClientId(), refreshTokenExpiration, scopes);
+            String refreshToken = createJWT(request.getClientId(), refreshTokenExpiration, refreshScope);
             
             return TokenResponse.builder()
                     .accessToken(accessToken)
@@ -101,7 +101,6 @@ public class TokenService {
     }
     
     public TokenResponse refreshToken(TokenRequest request) {
-        // Validate refresh token first
         TokenValidationRequest validationRequest = new TokenValidationRequest();
         validationRequest.setToken(request.getRefreshToken());
         
@@ -109,8 +108,7 @@ public class TokenService {
         if (!validation.isValid()) {
             throw new RuntimeException("Invalid refresh token");
         }
-        
-        // Generate new tokens
+
         return generateToken(request);
     }
     
